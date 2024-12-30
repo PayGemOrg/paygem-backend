@@ -1,0 +1,12 @@
+/bin
+/include
+/lib
+.DS_Store
+.env
+**/__pycache__
+.idea
+/Scripts
+/venv
+/Lib
+/Include
+**pyvenv.cfg
