@@ -1,4 +1,4 @@
-name: Docker Compose Build And Push
+name: Docker Build And Push
 
 on:
     push:
@@ -11,4 +11,4 @@ jobs:
 
         steps:
             - name: Checkout Repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v1
