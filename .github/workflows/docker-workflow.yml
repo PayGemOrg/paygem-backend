@@ -24,3 +24,6 @@ jobs:
 
             - name: Sleep for 20s
               run: sleep 20
+
+            - name: Trigger Deployment Webhook
+              run: curl "${{ secrets.WEBHOOK }}"

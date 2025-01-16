@@ -11,7 +11,7 @@ class ServiceBase(BaseModel, DateTimeModelMixin):
     name: str  
     description: Optional[str] = None  
     is_active: bool = True  
-    tags: List[str] = []  
+    tags: str
 
     class Config:
         allow_population_by_field_name = True
@@ -29,7 +29,7 @@ class ServiceResponse(BaseModel):
     name: str
     description: Optional[str] = None
     is_active: bool
-    tags: List[str]
+    tags: str
 
     class Config:
         from_attributes = True

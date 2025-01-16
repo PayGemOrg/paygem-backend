@@ -17,6 +17,7 @@ class PlanBase(BaseModel, DateTimeModelMixin):
     features: List[str] = []  
     is_active: bool = True 
     subscribers_limit = Optional[int] = None
+    subscriberCount = Optional[int] = 0
 
     class Config:
         allow_population_by_field_name = True
@@ -39,6 +40,7 @@ class PlanResponse(BaseModel):
     billing_cycle: str
     features: List[str]
     is_active: bool
+    subscriberCount = Optional[int]
 
     class Config:
         from_attributes = True
