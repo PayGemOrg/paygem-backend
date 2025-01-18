@@ -13,11 +13,11 @@ class Settings:
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
     REFRESH_TOKEN_EXPIRE_MINUTES = 20
     CONTRACT_ADDRESS = os.getenv("CONTRACT_ADDRESS", "")
-    RPC_URL = os.getenv("RPC_URL", "")
+    WEB3_PROVIDER = os.getenv("RPC_URL", "")
     GAS_LIMIT = int(os.getenv("GAS_LIMIT", "200000"))
     GAS_PRICE_GWEI = int(os.getenv("GAS_PRICE_GWEI", "20"))
     CONTRACT_ABI_PATH = "ABI/abi.json"
-    
+
     def __init__(self):
         self.CONTRACT_ABI = self.load_contract_abi()
 
