@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from ..controllers.subscription_controller import SubscriptionController
-from ..models.subscription import SubscriptionCreate
+from ..schemas.subscription import SubscriptionCreate
 
 router = APIRouter(prefix="/subscriptions", tags=["subscriptions"])
 controller = SubscriptionController()
