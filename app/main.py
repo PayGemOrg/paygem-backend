@@ -1,10 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.helpers.config import settings
-from app.routes.service_routes import router as service_router
-from app.routes.plan_routes import router as plan_router
-from app.routes.subscription_routes import router as subscription_router
-from app.routes.wallet_routes import router as wallet_router
+from app.routers.service_routes import router as service_router
+from app.routers.plan_routes import router as plan_router
+from app.routers.subscription_routes import router as subscription_router
+from app.routers.wallet_routes import router as wallet_router
 app = FastAPI(title=settings.PROJECT_TITLE, version=settings.VERSION)
 
 

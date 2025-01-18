@@ -1,10 +1,12 @@
 
 from web3 import Web3
+from web3.contract import Contract
 from .config import settings
 import json
 
-def get_contract(web3: Web3, contract_address: str, contract_abi: str) -> Web3.eth.Contract:
-    return web3.eth.contract(address=contract_address, abi=json.loads(contract_abi))
+def get_contract(web3: Web3, contract_address: str, contract_abi: str) -> Contract:
+    contract = web3.eth.contract(address=contract_address, abi=contract_abi)
+    return contract
 
 def handle_transaction(web3: Web3, contract_function, user_address: str, private_key: str, value: int = 0):
     try:
@@ -31,3 +33,4 @@ def handle_transaction(web3: Web3, contract_function, user_address: str, private
             "status": "error",
             "message": str(e)
         }
+    
