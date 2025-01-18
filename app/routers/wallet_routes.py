@@ -1,6 +1,6 @@
 
 from fastapi import APIRouter
-from ..controllers.wallet_controller import WalletController
+from ..controllers.wallet_controllers import WalletController
 
 router = APIRouter(prefix="/wallet", tags=["wallet"])
 controller = WalletController()

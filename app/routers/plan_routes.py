@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from ..controllers.plan_controller import PlanController
-from ..models.subscription_models import PlanCreate
+from ..schemas.plans import PlanCreate
 
 router = APIRouter(prefix="/plans", tags=["plans"])
 controller = PlanController()
