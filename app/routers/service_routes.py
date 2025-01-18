@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from ..controllers.service_controller import ServiceController
-from ..schemas.subscription import ServiceCreate
+from ..schemas.service import ServiceCreate
 
 router = APIRouter(prefix="/services", tags=["services"])
 controller = ServiceController()
