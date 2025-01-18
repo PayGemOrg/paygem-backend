@@ -1,13 +1,14 @@
 from web3 import Web3
-from ..helpers.config import settings
-from ..helpers.web3_helper import get_contract, handle_transaction
+from app.helpers.config import settings
+from app.helpers.web3_helper import get_contract, handle_transaction
+from fastapi import HTTPException, status
 
 class PlanController:
     def __init__(self):
         self.web3 = Web3(Web3.HTTPProvider(settings.WEB3_PROVIDER))
-        self.contract = get_contract(self.web3, settings.CONTRACT_ADDRESS, settings.CONTRACT_ABI)
+        self.contract = get_contract()
 
-    async def create_plan(self, user_address: str, private_key: str, plan_data: dict) -> dict:
+    async def create_plan(self, user_address: str, plan_data: dict) -> dict:
         try:
             contract_function = self.contract.functions.createPlan(
                 plan_data.service_id,
@@ -19,9 +20,9 @@ class PlanController:
                 plan_data.billing_cycle,
                 plan_data.subscribers_limit
             )
-            return handle_transaction(self.web3, contract_function, user_address, private_key)
+            return handle_transaction(self.web3, contract_function, user_address)
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})
 
     async def get_plan(self, plan_id: int) -> dict:
         try:
@@ -43,11 +44,11 @@ class PlanController:
                 }
             }
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})
 
-    async def toggle_plan_status(self, user_address: str, private_key: str, plan_id: int) -> dict:
+    async def toggle_plan_status(self, user_address: str, plan_id: int) -> dict:
         try:
             contract_function = self.contract.functions.togglePlanStatus(plan_id)
-            return handle_transaction(self.web3, contract_function, user_address, private_key)
+            return handle_transaction(self.web3, contract_function, user_address)
         except Exception as e:
-            return {"status": "error", "message": str(e)}
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})

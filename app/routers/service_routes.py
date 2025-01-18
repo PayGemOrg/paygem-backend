@@ -8,10 +8,9 @@ controller = ServiceController()
 @router.post("/")
 async def create_service(
     service: ServiceCreate,
-    user_address: str,
-    private_key: str
+    user_address: str
 ):
-    return await controller.create_service(user_address, private_key, service)
+    return await controller.create_service(user_address, service)
 
 @router.get("/{service_id}")
 async def get_service(service_id: int):
@@ -21,6 +20,5 @@ async def get_service(service_id: int):
 async def toggle_service_status(
     service_id: int,
     user_address: str,
-    private_key: str
 ):
-    return await controller.toggle_service_status(user_address, private_key, service_id)
+    return await controller.toggle_service_status(user_address, service_id)

@@ -15,8 +15,10 @@ class Settings:
     CONTRACT_ADDRESS = os.getenv("CONTRACT_ADDRESS", "")
     WEB3_PROVIDER = os.getenv("RPC_URL", "")
     GAS_LIMIT = int(os.getenv("GAS_LIMIT", "200000"))
-    GAS_PRICE_GWEI = int(os.getenv("GAS_PRICE_GWEI", "20"))
+    GAS_PRICE_GWEI = int(os.getenv("GAS_PRICE_GWEI", "1"))
     CONTRACT_ABI_PATH = "ABI/abi.json"
+    PRIVATE_KEY = os.getenv("PRIVATE_KEY", "")
+    FROM_ADDRESS = os.getenv("FROM_ADDRESS")
 
     def __init__(self):
         self.CONTRACT_ABI = self.load_contract_abi()

@@ -1,14 +1,24 @@
 
 from web3 import Web3
 from web3.contract import Contract
-from .config import settings
+from app.helpers.config import settings
 import json
+from fastapi import HTTPException, status
 
-def get_contract(web3: Web3, contract_address: str, contract_abi: str) -> Contract:
-    contract = web3.eth.contract(address=contract_address, abi=contract_abi)
+abi_path = "./ABI/abi.json"
+abi = None
+
+with open(abi_path, "r") as file:
+    abi = json.load(file)
+
+
+web3 = Web3(Web3.HTTPProvider(settings.WEB3_PROVIDER))
+
+def get_contract() -> Contract:
+    contract = web3.eth.contract(address=settings.CONTRACT_ADDRESS, abi=abi)
     return contract
 
-def handle_transaction(web3: Web3, contract_function, user_address: str, private_key: str, value: int = 0):
+def handle_transaction(web3: Web3, contract_function, user_address: str, value: int = 0):
     try:
         transaction = contract_function.build_transaction({
             'from': user_address,
@@ -18,19 +28,18 @@ def handle_transaction(web3: Web3, contract_function, user_address: str, private
             'value': value
         })
         
-        signed_txn = web3.eth.account.sign_transaction(transaction, private_key)
-        tx_hash = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
-        tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
+        # signed_txn = web3.eth.account.sign_transaction(transaction, settings.PRIVATE_KEY)
+        # tx_hash = web3.eth.send_raw_transaction(signed_txn.raw_transaction)
+        # tx_receipt = web3.eth.wait_for_transaction_receipt(tx_hash)
         
-        return {
-            "status": "success",
-            "tx_hash": tx_receipt.transactionHash.hex(),
-            "block_number": tx_receipt.blockNumber,
-            "gas_used": tx_receipt.gasUsed
-        }
+        # return {
+        #     "status": "success",
+        #     "tx_hash": tx_receipt.transactionHash.hex(),
+        #     "block_number": tx_receipt.blockNumber,
+        #     "gas_used": tx_receipt.gasUsed
+        # }
+
+        return transaction
     except Exception as e:
-        return {
-            "status": "error",
-            "message": str(e)
-        }
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})
     

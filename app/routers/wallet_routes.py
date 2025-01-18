@@ -8,10 +8,9 @@ controller = WalletController()
 @router.post("/deposit")
 async def deposit(
     amount: float,
-    user_address: str,
-    private_key: str
+    user_address: str
 ):
-    return await controller.make_deposit(user_address, private_key, amount)
+    return await controller.make_deposit(user_address, amount)
 
 @router.get("/balance/{user_address}")
 async def get_user_balance(user_address: str):
@@ -20,7 +19,6 @@ async def get_user_balance(user_address: str):
 @router.post("/withdraw")
 async def withdraw(
     amount: float,
-    user_address: str,
-    private_key: str
+    user_address: str
 ):
-    return await controller.withdraw(user_address, private_key, amount)
+    return await controller.withdraw(user_address, amount)
