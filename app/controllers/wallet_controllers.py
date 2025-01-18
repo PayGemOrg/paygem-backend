@@ -1,42 +1,42 @@
 from web3 import Web3
-from app.helpers.config import settings
+from ..helpers.config import settings
+from ..helpers.web3_helper import get_contract, handle_transaction
 
+class WalletController:
+    def __init__(self):
+        self.web3 = Web3(Web3.HTTPProvider(settings.WEB3_PROVIDER))
+        self.contract = get_contract(self.web3, settings.CONTRACT_ADDRESS, settings.CONTRACT_ABI)
 
-def make_deposit(user_address: str, private_key: str, deposit_amount: float) -> dict:
-    try:
-        # Initialize Web3 and Contract
-        web3 = Web3(Web3.HTTPProvider(settings.WEB3_PROVIDER))
-        contract = get_contract(web3, settings.CONTRACT_ADDRESS, settings.CONTRACT_ABI)
+    async def make_deposit(self, user_address: str, private_key: str, deposit_amount: float) -> dict:
+        try:
+            deposit_in_wei = self.web3.to_wei(deposit_amount, 'ether')
+            contract_function = self.contract.functions.deposit()
+            return handle_transaction(
+                self.web3,
+                contract_function,
+                user_address,
+                private_key,
+                value=deposit_in_wei
+            )
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
 
-        # Convert deposit amount to Wei (Ethereum uses Wei for transactions)
-        deposit_in_wei = web3.toWei(deposit_amount, 'ether')
+    async def get_user_balance(self, user_address: str) -> dict:
+        try:
+            balance = self.contract.functions.getUserBalance(user_address).call()
+            return {
+                "status": "success",
+                "data": {
+                    "balance": self.web3.from_wei(balance, 'ether')
+                }
+            }
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
 
-        # Build the transaction
-        txn = contract.functions.deposit().buildTransaction({
-            'from': user_address,
-            'value': deposit_in_wei,
-            'gas': 200000,
-            'gasPrice': web3.toWei('20', 'gwei'),
-            'nonce': web3.eth.getTransactionCount(user_address),
-        })
-
-        # Sign the transaction with the user's private key
-        signed_txn = web3.eth.account.signTransaction(txn, private_key)
-
-        # Send the transaction
-        tx_hash = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-
-        # Wait for the transaction receipt
-        tx_receipt = web3.eth.waitForTransactionReceipt(tx_hash)
-
-        return {
-            "status": "success",
-            "tx_hash": tx_receipt.transactionHash.hex(),
-            "block_number": tx_receipt.blockNumber,
-            "gas_used": tx_receipt.gasUsed,
-        }
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": str(e)
-        }
+    async def withdraw(self, user_address: str, private_key: str, amount: float) -> dict:
+        try:
+            amount_in_wei = self.web3.to_wei(amount, 'ether')
+            contract_function = self.contract.functions.withdraw(amount_in_wei)
+            return handle_transaction(self.web3, contract_function, user_address, private_key)
+        except Exception as e:
+            return {"status": "error", "message": str(e)}
