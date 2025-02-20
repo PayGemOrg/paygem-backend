@@ -1,9 +1,8 @@
-
 from web3 import Web3
 from app.helpers.config import settings
 from app.helpers.web3_helper import get_contract, handle_transaction
 from fastapi import HTTPException, status
-from app.schemas.service import ServiceCreate
+from app.schemas.service import ServiceCreate, ServiceUpdate
 
 class ServiceController:
     def __init__(self):
@@ -38,9 +37,20 @@ class ServiceController:
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})
 
-    async def toggle_service_status(self, user_address: str, service_id: int) -> dict:
+    async def get_all_services(self) -> dict:
+        """Retrieve all services using the smart contract's getAllServices() method"""
         try:
-            contract_function = self.contract.functions.toggleServiceStatus(service_id)
-            return handle_transaction(self.web3, contract_function, user_address)
+            services = self.contract.functions.getAllServices().call()
+            return {"status": "success", "data": [
+                {
+                    "id": service[0],
+                    "merchant": service[1],
+                    "name": service[2],
+                    "description": service[3],
+                    "is_active": service[4],
+                    "tags": service[5]
+                }
+                for service in services
+            ]}
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})

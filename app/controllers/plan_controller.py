@@ -46,9 +46,43 @@ class PlanController:
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})
 
-    async def toggle_plan_status(self, user_address: str, plan_id: int) -> dict:
+    async def get_all_plans(self) -> dict:
+        """Retrieve all plans using the smart contract's getAllPlans() method"""
         try:
-            contract_function = self.contract.functions.togglePlanStatus(plan_id)
+            plans = self.contract.functions.getAllPlans().call()
+            return {"status": "success", "data": [
+                {
+                    "id": plan[0],
+                    "service_id": plan[1],
+                    "merchant_id": plan[2],
+                    "name": plan[3],
+                    "description": plan[4],
+                    "price": plan[5],
+                    "currency": plan[6],
+                    "billing_cycle": plan[7],
+                    "is_active": plan[8],
+                    "subscribers_limit": plan[9],
+                    "subscriber_count": plan[10]
+                }
+                for plan in plans
+            ]}
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})
+
+    async def update_plan(self, user_address: str, plan_id: int, update_data: dict) -> dict:
+        """Update an existing plan"""
+        try:
+            contract_function = self.contract.functions.updatePlan(
+                plan_id, update_data.name, update_data.price, update_data.billing_cycle
+            )
+            return handle_transaction(self.web3, contract_function, user_address)
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})
+
+    async def delete_plan(self, user_address: str, plan_id: int) -> dict:
+        """Delete an existing plan"""
+        try:
+            contract_function = self.contract.functions.deletePlan(plan_id)
             return handle_transaction(self.web3, contract_function, user_address)
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})

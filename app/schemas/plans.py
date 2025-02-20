@@ -38,3 +38,18 @@ class PlanResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class PlanUpdate(BaseModel):
+    name: Optional[str] = Field(None, description="The updated name of the plan")
+    price: Optional[float] = Field(None, gt=0, description="The updated price of the plan")
+    billing_cycle: Optional[str] = Field(None, description="The updated billing cycle (e.g., monthly, yearly)")
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "Premium Plan",
+                "price": 9.99,
+                "billing_cycle": "monthly"
+            }
+        }

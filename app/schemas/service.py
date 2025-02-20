@@ -26,3 +26,18 @@ class ServiceResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class ServiceUpdate(BaseModel):
+    name: Optional[str] = Field(None, description="The updated name of the service")
+    description: Optional[str] = Field(None, description="The updated description of the service")
+    tags: Optional[str] = Field(None, description="The updated tags for the service")
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "name": "Crypto Streaming Service",
+                "description": "A Web3 streaming platform for movies and shows",
+                "tags": "streaming, movies, blockchain"
+            }
+        }
+
