@@ -2,17 +2,20 @@ from web3 import Web3
 from app.helpers.config import settings
 from app.helpers.web3_helper import get_contract, handle_transaction
 from fastapi import HTTPException, status
+from app.schemas.plans import plan_helper, PlanCreate
 
 class PlanController:
     def __init__(self):
         self.web3 = Web3(Web3.HTTPProvider(settings.WEB3_PROVIDER))
         self.contract = get_contract()
 
-    async def create_plan(self, user_address: str, plan_data: dict) -> dict:
+    async def create_plan(self, user_address: str, plan_data: PlanCreate) -> dict:
         try:
+            # Validate plan price
+            if plan_data.price <= 0:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": "Price must be greater than zero"})
             contract_function = self.contract.functions.createPlan(
                 plan_data.service_id,
-                plan_data.merchant_id,
                 plan_data.name,
                 plan_data.description,
                 plan_data.price,
@@ -29,19 +32,7 @@ class PlanController:
             plan = self.contract.functions.getPlan(plan_id).call()
             return {
                 "status": "success",
-                "data": {
-                    "id": plan[0],
-                    "service_id": plan[1],
-                    "merchant_id": plan[2],
-                    "name": plan[3],
-                    "description": plan[4],
-                    "price": plan[5],
-                    "currency": plan[6],
-                    "billing_cycle": plan[7],
-                    "is_active": plan[8],
-                    "subscribers_limit": plan[9],
-                    "subscriber_count": plan[10]
-                }
+                "data": plan_helper(plan)
             }
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})
@@ -51,20 +42,7 @@ class PlanController:
         try:
             plans = self.contract.functions.getAllPlans().call()
             return {"status": "success", "data": [
-                {
-                    "id": plan[0],
-                    "service_id": plan[1],
-                    "merchant_id": plan[2],
-                    "name": plan[3],
-                    "description": plan[4],
-                    "price": plan[5],
-                    "currency": plan[6],
-                    "billing_cycle": plan[7],
-                    "is_active": plan[8],
-                    "subscribers_limit": plan[9],
-                    "subscriber_count": plan[10]
-                }
-                for plan in plans
+                plan_helper(plan) for plan in plans
             ]}
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})
@@ -84,5 +62,15 @@ class PlanController:
         try:
             contract_function = self.contract.functions.deletePlan(plan_id)
             return handle_transaction(self.web3, contract_function, user_address)
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})
+        
+    async def get_plans_by_merchant_address(self, user_address: str) -> dict:
+        """Retrieve all plans by merchant address"""
+        try:
+            plans = self.contract.functions.getMerchantPlans(user_address).call()
+            return {"status": "success", "data": [
+                plan_helper(plan) for plan in plans
+            ]}
         except Exception as e:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail={"status": "error", "message": str(e)})

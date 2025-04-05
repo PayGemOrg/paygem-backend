@@ -5,6 +5,7 @@ from app.routers.service_routes import router as service_router
 from app.routers.plan_routes import router as plan_router
 from app.routers.subscription_routes import router as subscription_router
 from app.routers.wallet_routes import router as wallet_router
+from app.routers.users import router as user_router
 app = FastAPI(title=settings.PROJECT_TITLE, version=settings.VERSION)
 
 
@@ -21,6 +22,7 @@ app.include_router(service_router, prefix="/api/v1")
 app.include_router(plan_router, prefix="/api/v1")
 app.include_router(subscription_router, prefix="/api/v1")
 app.include_router(wallet_router, prefix="/api/v1")
+app.include_router(user_router, prefix="/api/v1")
 
 @app.get("/", response_model=dict)
 def root():

@@ -1,3 +1,9 @@
-python3 -m venv .
-pip install -r requirements.txt
-source ./bin/activate
+if [ -d ".venv" ]; then
+    echo "Virtual environment already exists."
+else
+    echo "Creating virtual environment..."
+    python3 -m venv .venv
+    source ./.venv/bin/activate
+    pip install -r requirements.txt
+    source ./bin/activate
+fi

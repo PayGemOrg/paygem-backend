@@ -24,6 +24,49 @@
             {
                 "indexed": true,
                 "internalType": "uint256",
+                "name": "subscriptionId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "merchant",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "planId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "status",
+                "type": "string"
+            }
+        ],
+        "name": "PaymentProcessedEvent",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
                 "name": "planId",
                 "type": "uint256"
             },
@@ -164,6 +207,19 @@
                 "internalType": "uint256",
                 "name": "subscriptionId",
                 "type": "uint256"
+            }
+        ],
+        "name": "SubscriptionCancelled",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "subscriptionId",
+                "type": "uint256"
             },
             {
                 "indexed": true,
@@ -179,49 +235,6 @@
             }
         ],
         "name": "SubscriptionCreated",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "transactionId",
-                "type": "uint256"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "merchant",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "planId",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "string",
-                "name": "status",
-                "type": "string"
-            }
-        ],
-        "name": "TransactionLogged",
         "type": "event"
     },
     {
@@ -247,12 +260,20 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "serviceId",
+                "name": "subscriptionId",
                 "type": "uint256"
-            },
+            }
+        ],
+        "name": "cancelSubscription",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
             {
                 "internalType": "uint256",
-                "name": "merchantId",
+                "name": "serviceId",
                 "type": "uint256"
             },
             {
@@ -322,6 +343,19 @@
                 "type": "uint256"
             }
         ],
+        "name": "createSubscription",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "planId",
+                "type": "uint256"
+            }
+        ],
         "name": "deletePlan",
         "outputs": [],
         "stateMutability": "nonpayable",
@@ -364,9 +398,9 @@
                         "type": "uint256"
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "merchantId",
-                        "type": "uint256"
+                        "internalType": "address",
+                        "name": "merchant",
+                        "type": "address"
                     },
                     {
                         "internalType": "string",
@@ -484,9 +518,9 @@
                         "type": "uint256"
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "merchantId",
-                        "type": "uint256"
+                        "internalType": "address",
+                        "name": "merchant",
+                        "type": "address"
                     },
                     {
                         "internalType": "uint256",
@@ -518,8 +552,90 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "getAllTransactions",
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "merchant",
+                "type": "address"
+            }
+        ],
+        "name": "getMerchantPlans",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "serviceId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "merchant",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "description",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "currency",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "billingCycle",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "isActive",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "subscribersLimit",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "subscriberCount",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct SubscriptionManager.Plan[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "merchant",
+                "type": "address"
+            }
+        ],
+        "name": "getMerchantServices",
         "outputs": [
             {
                 "components": [
@@ -530,46 +646,31 @@
                     },
                     {
                         "internalType": "address",
-                        "name": "user",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "address",
                         "name": "merchant",
                         "type": "address"
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "planId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    },
-                    {
                         "internalType": "string",
-                        "name": "serviceName",
+                        "name": "name",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "currency",
+                        "name": "description",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "isActive",
+                        "type": "bool"
                     },
                     {
                         "internalType": "string",
-                        "name": "status",
+                        "name": "tags",
                         "type": "string"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "timestamp",
-                        "type": "uint256"
                     }
                 ],
-                "internalType": "struct SubscriptionManager.Transaction[]",
+                "internalType": "struct SubscriptionManager.Service[]",
                 "name": "",
                 "type": "tuple[]"
             }
@@ -600,9 +701,9 @@
                         "type": "uint256"
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "merchantId",
-                        "type": "uint256"
+                        "internalType": "address",
+                        "name": "merchant",
+                        "type": "address"
                     },
                     {
                         "internalType": "string",
@@ -707,6 +808,118 @@
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "serviceId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getServiceById",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "merchant",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "description",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "isActive",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "tags",
+                        "type": "string"
+                    }
+                ],
+                "internalType": "struct SubscriptionManager.Service",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "subscriptionId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getSubscription",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "planId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "merchant",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "nextBillingDate",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "isActive",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "status",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct SubscriptionManager.Subscription",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "user",
                 "type": "address"
@@ -718,6 +931,164 @@
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "getUserMetrics",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "totalSubscriptions",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "activeSubscriptions",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "totalSpent",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "monthlySpent",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct SubscriptionManager.UserMetrics",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "getUserPaymentProcessed",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "subscriptionId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "merchant",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "planId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "status",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "timestamp",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct SubscriptionManager.PaymentProcessed[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "getUserSubscriptions",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "user",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "planId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "merchant",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "nextBillingDate",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "isActive",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "status",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "amount",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct SubscriptionManager.Subscription[]",
+                "name": "",
+                "type": "tuple[]"
             }
         ],
         "stateMutability": "view",

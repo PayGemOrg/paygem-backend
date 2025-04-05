@@ -2,34 +2,22 @@ from pydantic import BaseModel, Field
 from typing import Optional, List, Literal
 from app.schemas.helpers.core import DateTimeModelMixin
 
-class PlanBase(BaseModel, DateTimeModelMixin):
-    id: Optional[str] = Field(default=None)
-    service_id: str
-    merchant_id: str
-    name: str  
-    description: Optional[str] = None  
-    price: float
+class PlanCreate(BaseModel):
+    service_id: int
+    name: str
+    description: Optional[str] = ""
+    price: int
     currency: str = "ETH"
     billing_cycle: Literal["monthly", "yearly"] = "monthly"
-    features: List[str] = []
-    is_active: bool = True
     subscribers_limit: Optional[int] = None
-    subscriber_count: Optional[int] = 0
-
-    class Config:
-        allow_population_by_field_name = True
-        arbitrary_types_allowed = True
-
-class PlanCreate(PlanBase):
-    pass
 
 class PlanResponse(BaseModel):
     id: Optional[str] = None
-    service_id: str
+    service_id: int
     merchant_id: str
     name: str
     description: Optional[str] = None
-    price: float
+    price: int
     currency: str
     billing_cycle: str
     features: List[str]
@@ -53,3 +41,18 @@ class PlanUpdate(BaseModel):
                 "billing_cycle": "monthly"
             }
         }
+
+def plan_helper(plan):
+    return {
+        "id": plan[0],
+        "service_id": plan[1],
+        "merchant": plan[2],
+        "name": plan[3],
+        "description": plan[4],
+        "price": plan[5],
+        "currency": plan[6],
+        "billing_cycle": plan[7],
+        "is_active": plan[8],
+        "subscriber_limit": plan[9],
+        "subscriber_count": plan[10]
+    }

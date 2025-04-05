@@ -2,11 +2,10 @@ from pydantic import BaseModel, Field
 from typing import Optional, Literal
 from app.schemas.helpers.core import DateTimeModelMixin
 
-class SubscriptionBase(BaseModel, DateTimeModelMixin):
-    id: Optional[str] = Field(default=None)  
+class SubscriptionBase(BaseModel, DateTimeModelMixin): 
     user_id: str  
     merchant_id: str 
-    plan_id: str  
+    plan_id: int  
     status: Literal["active", "paused", "canceled"] = "active"
     next_billing_date: Optional[str] = None
     last_payment_date: Optional[str] = None
@@ -19,15 +18,15 @@ class SubscriptionBase(BaseModel, DateTimeModelMixin):
         arbitrary_types_allowed = True
 
 
-class SubscriptionCreate(SubscriptionBase):
-    pass
+class SubscriptionCreate(BaseModel):
+    plan_id: int
 
 
 class SubscriptionResponse(BaseModel):
     id: Optional[str] = None
     user_id: str
     merchant_id: str
-    plan_id: str
+    plan_id: int
     status: str
     next_billing_date: Optional[str] = None
     last_payment_date: Optional[str] = None
@@ -37,3 +36,15 @@ class SubscriptionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+def subscription_helper(subscription):
+    return {
+        "id": subscription[0],
+        "user": subscription[1],
+        "plan_id": subscription[2],
+        "merchant": subscription[3],
+        "next_billing_date": subscription[4],
+        "is_active": subscription[5],
+        "status": subscription[6],
+        "amount": subscription[7]
+    }

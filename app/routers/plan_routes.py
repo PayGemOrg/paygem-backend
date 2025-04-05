@@ -24,3 +24,7 @@ async def update_plan(plan_id: int, plan_update: PlanUpdate, user_address: str):
 @router.delete("/{plan_id}")
 async def delete_plan(plan_id: int, user_address: str):
     return await controller.delete_plan(user_address, plan_id)
+
+@router.get("/merchant/{user_address}")
+async def get_merchant_plans(user_address: str):
+    return await controller.get_plans_by_merchant_address(user_address)
